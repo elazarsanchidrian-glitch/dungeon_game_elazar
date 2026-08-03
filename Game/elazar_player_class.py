@@ -3,6 +3,7 @@ class Player:
         self.name = name
         self.health = 100
         self.stamina = 100
+        self.magicka = 100
 
 
 

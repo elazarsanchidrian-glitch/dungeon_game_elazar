@@ -3,6 +3,9 @@ class Monster:
     def __init__(self,name):
         self.name = name
         self.health = 100
+        self.stamina = 100
+        self.magicka = 100
+
 
 
     def attack(self):
