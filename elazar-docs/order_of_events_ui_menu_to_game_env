@@ -26,6 +26,10 @@
                                       choose gender
                                             |
                                       (male,female)
+                                            |
+                                     choose difficulty
+                                            |
+                                    (easy,medium,hard)
 
                                             |
                                        enter world
