@@ -6,6 +6,7 @@ def main():
 
 
     dungeon = Dungeon()
+    print(len(dungeon.room))
 
 
 
