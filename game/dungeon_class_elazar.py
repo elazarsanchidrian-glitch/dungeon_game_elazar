@@ -1,3 +1,6 @@
+from room import Room
+
+
 class Dungeon:
     """
     Represents the entire dungeon.
@@ -12,7 +15,7 @@ class Dungeon:
         """
         self.rooms = []
 
-        # self.create_rooms()
+        self.create_rooms()
         # self.connect_rooms()
         # self.add_monsters()
         # self.add_items()
@@ -21,7 +24,11 @@ class Dungeon:
         """
         Create all the rooms in the dungeon.
         """
-
+        rooms = [
+            [Room("1") , Room("2"), Room("3")],
+            [Room("4"), Room("5"), Room("6")],
+            [Room("7"), Room("8"), Room("9")],
+        ]
 
     def connect_rooms(self):
         """
