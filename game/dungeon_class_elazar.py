@@ -10,17 +10,18 @@ class Dungeon:
         """
         Create a new dungeon.
         """
-        self.rooms = {}
+        self.rooms = []
 
-        self.create_rooms()
-        self.connect_rooms()
-        self.add_monsters()
-        self.add_items()
+        # self.create_rooms()
+        # self.connect_rooms()
+        # self.add_monsters()
+        # self.add_items()
 
-    def create_rooms(self):
+    def create_rooms(self, num_rooms):
         """
         Create all the rooms in the dungeon.
         """
+
 
     def connect_rooms(self):
         """
