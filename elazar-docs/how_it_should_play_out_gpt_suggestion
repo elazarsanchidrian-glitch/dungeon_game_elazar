@@ -1,0 +1,60 @@
+=========================
+Dungeon Adventure
+=========================
+
+Enter your name:
+Elazar
+
+Welcome Elazar!
+
+You are in the Entrance Hall.
+
+Exits:
+North
+East
+
+There is:
+Rusty Sword
+
+>
+
+take sword
+
+You picked up Rusty Sword.
+
+>
+
+north
+
+You enter a Cave.
+
+A Goblin attacks!
+
+>
+
+attack
+
+You hit Goblin for 6 damage.
+
+Goblin hits you for 2 damage.
+
+>
+
+attack
+
+Goblin defeated!
+
+Goblin dropped:
+Potion
+
+>
+
+take potion
+
+Potion added to inventory.
+
+>
+
+drink potion
+
+You recovered 15 HP.

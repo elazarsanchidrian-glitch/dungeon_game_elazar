@@ -14,35 +14,71 @@ class Game:
         player_name = self.ui.get_player_name()
         self.player = Player(player_name)
 
+        # Start the player in the dungeon's starting room
+        self.player.current_room = self.dungeon.current_room
+
     def start(self):
         self.ui.show_message(f"Welcome, {self.player.name}!")
 
         while True:
 
-            self.dungeon.display_current_room()
+            # Display the current room
+            self.player.current_room.display()
 
             print("\nCommands:")
             print("north")
             print("south")
             print("east")
             print("west")
+            print("take <item>")
+            print("attack")
             print("inventory")
             print("stats")
             print("quit")
 
-            command = input("> ").lower()
+            command = input("> ").lower().strip()
 
             if command == "north":
                 self.dungeon.move_north()
+                self.player.current_room = self.dungeon.current_room
 
             elif command == "south":
                 self.dungeon.move_south()
+                self.player.current_room = self.dungeon.current_room
 
             elif command == "east":
                 self.dungeon.move_east()
+                self.player.current_room = self.dungeon.current_room
 
             elif command == "west":
                 self.dungeon.move_west()
+                self.player.current_room = self.dungeon.current_room
+
+            elif command.startswith("take "):
+                item_name = command[5:]
+
+                room = self.player.current_room
+
+                if item_name in room.items:
+                    room.remove_item(item_name)
+                    self.player.add_item(item_name)
+                    self.ui.show_message(f"You picked up {item_name}.")
+                else:
+                    self.ui.show_error("That item isn't here.")
+
+            elif command == "attack":
+                room = self.player.current_room
+
+                if room.monsters:
+                    monster = room.monsters[0]
+
+                    self.ui.show_message(f"You attack {monster}!")
+
+                    room.remove_monster(monster)
+
+                    self.ui.show_message(f"{monster} was defeated!")
+                else:
+                    self.ui.show_error("There are no monsters here.")
 
             elif command == "inventory":
                 self.ui.show_inventory(self.player)
