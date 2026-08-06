@@ -5,131 +5,137 @@ class ConsoleUI:
     ##################################################
 
     def show_welcome(self):
-        """
-        Display the welcome screen.
-        """
+        print("=" * 40)
+        print(" Welcome to the Dungeon Game!")
+        print("=" * 40)
 
     def get_player_name(self):
-        """
-        Ask the player for their name.
-        """
+        return input("Enter your name: ")
 
     ##################################################
     # Main Menu
     ##################################################
 
     def show_menu(self):
-        """
-        Display the main menu.
-        """
+        print("\nMain Menu")
+        print("1. Start Game")
+        print("2. Show Stats")
+        print("3. Inventory")
+        print("4. Quit")
 
     def get_menu_choice(self):
-        """
-        Ask the player to choose a menu option.
-        """
+        return input("Choose an option: ")
 
     ##################################################
     # Room Display
     ##################################################
 
     def show_room(self, room):
-        """
-        Display information about the current room.
-        """
+        room.display()
+
+    ##################################################
+    # Commands
+    ##################################################
+
+    def show_commands(self):
+        print("\nCommands:")
+        print("north")
+        print("south")
+        print("east")
+        print("west")
+        print("inventory")
+        print("stats")
+        print("quit")
+
+    def get_command(self):
+        return input("> ").lower()
 
     ##################################################
     # Player Movement
     ##################################################
 
     def get_direction(self, exits):
-        """
-        Ask the player which direction they want to move.
-        """
+        print(f"Available directions: {', '.join(exits)}")
+        return input("Which direction? ").lower()
 
     ##################################################
     # General Messages
     ##################################################
 
     def show_message(self, message):
-        """
-        Display a message to the player.
-        """
+        print(message)
 
     def show_error(self, message):
-        """
-        Display an error message.
-        """
+        print(f"\n[ERROR] {message}")
 
     ##################################################
     # Inventory
     ##################################################
 
     def show_inventory(self, player):
-        """
-        Display the player's inventory.
-        """
+        print("\nInventory:")
+
+        if not player.inventory:
+            print("Empty")
+        else:
+            for item in player.inventory:
+                print(f"- {item}")
 
     ##################################################
     # Player Statistics
     ##################################################
 
     def show_player_stats(self, player):
-        """
-        Display the player's statistics.
-        """
+        print("\nPlayer Stats")
+        print(f"Name: {player.name}")
+        print(f"Health: {player.health}")
+        print(f"Stamina: {player.stamina}")
+        print(f"Magicka: {player.magicka}")
+        print(f"Gold: {player.gold}")
 
     ##################################################
     # Combat
     ##################################################
 
     def show_combat_start(self, monster):
-        """
-        Announce the start of combat.
-        """
+        print(f"\nA {monster.name} appears!")
 
     def show_attack(self, attacker, defender, damage):
-        """
-        Display the result of an attack.
-        """
+        print(f"{attacker.name} attacks {defender.name} for {damage} damage!")
 
     def show_monster_defeated(self, monster):
-        """
-        Display a message when a monster is defeated.
-        """
+        print(f"{monster.name} has been defeated!")
 
     def show_player_defeated(self):
-        """
-        Display the game over message.
-        """
+        print("Game Over!")
 
     ##################################################
     # Items
     ##################################################
 
     def show_items_found(self, items):
-        """
-        Display the items found in a room.
-        """
+        if items:
+            print("\nItems found:")
+            for item in items:
+                print(f"- {item}")
+        else:
+            print("No items found.")
 
     def confirm_pickup(self, item):
-        """
-        Ask whether the player wants to pick up an item.
-        """
+        choice = input(f"Pick up {item}? (y/n): ")
+        return choice.lower() == "y"
 
     ##################################################
     # Victory
     ##################################################
 
     def show_victory(self):
-        """
-        Display the victory message.
-        """
+        print("Congratulations! You escaped the dungeon!")
 
     ##################################################
     # Exit
     ##################################################
 
     def confirm_exit(self):
-        """
-        Ask the player to confirm exiting the game.
-        """
+        choice = input("Are you sure you want to quit? (y/n): ")
+        return choice.lower() == "y"

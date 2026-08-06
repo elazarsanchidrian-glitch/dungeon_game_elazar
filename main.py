@@ -1,17 +1,10 @@
-from game.dungeon_class_elazar import Dungeon
+from game.game import Game
+
 
 def main():
-
-    print("welcome to the dungeon game")
-
-
-    dungeon = Dungeon()
-    print(len(dungeon.room))
+    game = Game()
+    game.start()
 
 
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-
-
