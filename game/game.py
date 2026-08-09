@@ -2,6 +2,9 @@ from game.player import Player
 from game.dungeon import Dungeon
 from game.ui import ConsoleUI
 from game.character import CharacterCreation
+from game.monster import Monster
+from game.item import Item
+
 
 
 class Game:

@@ -1,5 +1,6 @@
 from game.room import Room
 from game.item import Item
+from game.monster import Monster
 
 
 class Dungeon:
