@@ -1,0 +1,57 @@
+                         DARK FANTASY DUNGEON CRAWLER (by Elazar S.)
+
+                                        new game
+                                           |
+                                        load game
+                                           |
+                                        settings
+                                           |
+                                         credits
+                                           |
+                                       exit (quit)
+                                           |
+                               pick a save slot (new game)
+                                           |
+                                         save 1
+                                           |
+                                         save 2
+                                           |
+                                         save 3
+                                           |
+                                     pick name (generate)
+                                           |
+                          choose race - create class - (pick/generate)
+                              |                             |
+                                                    (warrior,thief,mage)
+                   (orc,elf,human,beast)
+
+                                      choose gender
+                                            |
+                                      (male,female)
+                                            |
+                                     choose difficulty
+                                            |
+                                    (easy,medium,hard)
+
+                                            |
+                                       enter world
+
+
+
+                                      Creating World
+                                            |
+                                      loading world
+                                            |
+                           entering (randomly generated world)
+                                            |
+                                (use classes and random)
+
+                                            |
+                        (move and fight through world and enemies)
+                                            |
+                               (level up and gain exp points)
+                                            |
+
+                               save progress(menu button/ui)
+                                            |
+                                         exit game
