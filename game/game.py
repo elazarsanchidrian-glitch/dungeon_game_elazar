@@ -1,70 +1,123 @@
 from game.player import Player
 from game.dungeon import Dungeon
 from game.ui import ConsoleUI
+from game.character import CharacterCreation
 
 
 class Game:
 
     def __init__(self):
+
         self.ui = ConsoleUI()
         self.dungeon = Dungeon()
 
         self.ui.show_welcome()
 
+        # Get player name
         player_name = self.ui.get_player_name()
+
+        # Create character
+        character = CharacterCreation(player_name)
+
+        character.choose_class()
+        character.show_character()
+
+        # Create player
         self.player = Player(player_name)
 
-        # Start the player in the dungeon's starting room
+        self.player.character_class = character.character_class
+        self.player.health = character.health
+        self.player.stamina = character.stamina
+        self.player.magicka = character.magicka
+
+        # Start player in dungeon
         self.player.current_room = self.dungeon.current_room
 
+    def move_player(self, direction):
+
+        old_room = self.player.current_room
+
+        if direction == "north":
+            self.dungeon.move_north()
+
+        elif direction == "south":
+            self.dungeon.move_south()
+
+        elif direction == "east":
+            self.dungeon.move_east()
+
+        elif direction == "west":
+            self.dungeon.move_west()
+
+        self.player.current_room = self.dungeon.current_room
+
+        # Announce monsters when entering a new room
+        if self.player.current_room is not old_room:
+
+            if self.player.current_room.monsters:
+
+                for monster in self.player.current_room.monsters:
+                    self.ui.show_combat_start(monster)
+                    monster.speak()
+
     def start(self):
-        self.ui.show_message(f"Welcome, {self.player.name}!")
+
+        self.ui.show_message(
+            f"Welcome to the dungeon, {self.player.name}!"
+        )
 
         while True:
 
-            # Display the current room
+            # Display room
             self.player.current_room.display()
 
-            print("\nCommands:")
-            print("north")
-            print("south")
-            print("east")
-            print("west")
-            print("take <item>")
-            print("attack")
-            print("inventory")
-            print("stats")
-            print("quit")
+            # Commands
+            self.ui.show_commands()
 
             command = input("> ").lower().strip()
 
-            if command == "north":
-                self.dungeon.move_north()
-                self.player.current_room = self.dungeon.current_room
+            # -------------------------
+            # MOVEMENT
+            # -------------------------
 
-            elif command == "south":
-                self.dungeon.move_south()
-                self.player.current_room = self.dungeon.current_room
+            if command in ("north", "south", "east", "west"):
 
-            elif command == "east":
-                self.dungeon.move_east()
-                self.player.current_room = self.dungeon.current_room
+                self.move_player(command)
 
-            elif command == "west":
-                self.dungeon.move_west()
-                self.player.current_room = self.dungeon.current_room
+            # -------------------------
+            # TAKE ITEM
+            # -------------------------
 
             elif command.startswith("take "):
-                item_name = command[5:]
+
+                item_name = command[5:].strip()
 
                 room = self.player.current_room
 
-                if item_name in room.items:
-                    room.remove_item(item_name)
-                    self.player.add_item(item_name)
-                    self.ui.show_message(f"You picked up {item_name}.")
+                found_item = None
+
+                for item in room.items:
+
+                    if item.name.lower() == item_name:
+                        found_item = item
+                        break
+
+                if found_item:
+
+                    room.remove_item(found_item)
+
+                    self.player.add_item(found_item)
+
+                    self.ui.show_message(
+                        f"You picked up {found_item.name}."
+                    )
+
                 else:
-                    self.ui.show_error("That item isn't here.")
+
+                    self.ui.show_error(
+                        "That item isn't here."
+                    )
+
 
 
             # -------------------------
@@ -156,15 +209,45 @@ class Game:
 
                     )
 
+            # -------------------------
+            # INVENTORY
+            # -------------------------
+
             elif command == "inventory":
-                self.ui.show_inventory(self.player)
+
+                self.ui.show_inventory(
+                    self.player
+                )
+
+            # -------------------------
+            # STATS
+            # -------------------------
 
             elif command == "stats":
-                self.ui.show_player_stats(self.player)
+
+                self.ui.show_player_stats(
+                    self.player
+                )
+
+            # -------------------------
+            # QUIT
+            # -------------------------
 
             elif command == "quit":
+
                 if self.ui.confirm_exit():
                     break
 
+            # -------------------------
+            # UNKNOWN COMMAND
+            # -------------------------
+
             else:
-                self.ui.show_error("Unknown command.")
+
+                self.ui.show_error(
+                    "Unknown command."
+                )
+
+
+if __name__ == "__main__":
+    Game().start()
