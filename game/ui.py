@@ -125,17 +125,15 @@ class ConsoleUI:
         print("\nPlayer Stats")
 
         print(f"Name: {player.name}")
-
+        print(f"Race: {player.race}")
         print(f"Class: {player.character_class}")
+        print(f"Passive: {player.passive}")
 
-        print(f"Health: {player.health}")
-
+        print(f"Health: {player.health}/{player.max_health}")
         print(f"Stamina: {player.stamina}")
-
         print(f"Magicka: {player.magicka}")
 
         print(f"Gold: {player.gold}")
-
     # -------------------------
     # COMBAT
     # -------------------------

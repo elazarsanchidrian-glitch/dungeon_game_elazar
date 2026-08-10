@@ -19,14 +19,24 @@ class Game:
         # Create character
         character = CharacterCreation(player_name)
 
+        # Choose race first
+        character.choose_race()
+
+        # Then choose class
         character.choose_class()
+
         character.show_character()
 
         # Create player
         self.player = Player(player_name)
 
+        self.player.race = character.race
         self.player.character_class = character.character_class
+        self.player.passive = character.passive
+
         self.player.health = character.health
+        self.player.max_health = character.health
+
         self.player.stamina = character.stamina
         self.player.magicka = character.magicka
 

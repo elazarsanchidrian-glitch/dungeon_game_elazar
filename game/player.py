@@ -8,10 +8,14 @@ class Player:
         self.name = name
 
         self.health = 100
+        self.max_health = 100
+
         self.stamina = 100
         self.magicka = 100
 
+        self.race = None
         self.character_class = None
+        self.passive = None
 
         self.inventory = []
 
@@ -20,26 +24,47 @@ class Player:
         self.current_room = None
 
     def move(self, room):
-
         self.current_room = room
 
     def get_attack_damage(self):
 
         if self.character_class == "Warrior":
-
-            return 30
+            damage = 30
 
         elif self.character_class == "Mage":
-
-            return 25
+            damage = 25
 
         elif self.character_class == "Rogue":
+            damage = 28
 
-            return 28
+        else:
+            damage = 20
 
-        return 20
+        # Orc and Elf racial attack bonuses
+        if self.passive == "Brutal":
+            damage = int(damage * 1.15)
+
+        elif self.passive == "Arcane Affinity":
+            damage = int(damage * 1.10)
+
+        return damage
 
     def attack(self, monster):
+
+        # Halfling Lucky passive
+        if self.passive == "Lucky":
+
+            if random.random() < 0.15:
+
+                print(
+                    f"{self.name}'s Lucky passive activates!"
+                )
+
+                print(
+                    f"{self.name} avoids danger completely!"
+                )
+
+                return True
 
         # 5% chance of dying while attacking
         if random.random() < 0.05:
@@ -53,13 +78,15 @@ class Player:
             )
 
             self.health = 0
+
             return False
 
         # 20% chance to miss
         if random.random() < 0.20:
 
             print(
-                f"{self.name} attacks {monster.name} but misses!"
+                f"{self.name} attacks "
+                f"{monster.name} but misses!"
             )
 
             return False
@@ -78,14 +105,25 @@ class Player:
 
     def take_damage(self, damage):
 
+        # Dwarf Tough passive
+        if self.passive == "Tough":
+
+            reduced_damage = int(damage * 0.90)
+
+            print(
+                f"{self.name}'s Tough passive reduces "
+                f"the damage from {damage} to "
+                f"{reduced_damage}!"
+            )
+
+            damage = reduced_damage
+
         self.health -= damage
 
         if self.health < 0:
-
             self.health = 0
 
     def add_item(self, item):
-
         self.inventory.append(item)
 
     def show_inventory(self):
