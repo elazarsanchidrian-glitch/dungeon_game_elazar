@@ -33,6 +33,27 @@ class Game:
         # Start player in dungeon
         self.player.current_room = self.dungeon.current_room
 
+    def monster_attack(self, monster):
+        """Monster attacks the player."""
+
+        damage = monster.attack()
+
+        self.player.take_damage(damage)
+
+        self.ui.show_message(
+            f"{monster.name} hits you for {damage} damage!"
+        )
+
+        self.ui.show_message(
+            f"Your health: {self.player.health}/{self.player.health}"
+        )
+
+        if self.player.health <= 0:
+            self.ui.show_player_defeated()
+            return False
+
+        return True
+
     def move_player(self, direction):
 
         old_room = self.player.current_room
@@ -51,14 +72,20 @@ class Game:
 
         self.player.current_room = self.dungeon.current_room
 
-        # Announce monsters when entering a new room
+        # Check if we actually entered a different room
         if self.player.current_room is not old_room:
 
+            # Monsters appear when entering the room
             if self.player.current_room.monsters:
 
                 for monster in self.player.current_room.monsters:
+
                     self.ui.show_combat_start(monster)
                     monster.speak()
+
+                    # Monster immediately attacks
+                    if not self.monster_attack(monster):
+                        return
 
     def start(self):
 
@@ -83,6 +110,9 @@ class Game:
             if command in ("north", "south", "east", "west"):
 
                 self.move_player(command)
+
+                if self.player.health <= 0:
+                    break
 
             # -------------------------
             # TAKE ITEM
@@ -118,12 +148,8 @@ class Game:
                         "That item isn't here."
                     )
 
-
-
             # -------------------------
-
             # ATTACK
-
             # -------------------------
 
             elif command == "attack":
@@ -135,78 +161,43 @@ class Game:
                     monster = room.monsters[0]
 
                     # Player attacks
-
                     attack_successful = self.player.attack(monster)
 
                     # Player died
-
                     if self.player.health <= 0:
-                        self.ui.show_player_defeated()
 
+                        self.ui.show_player_defeated()
                         break
 
                     # Player missed
-
                     if not attack_successful:
 
-                        # Monster gets a chance to attack
-
-                        monster.attack()
-
-                        self.player.take_damage(10)
-
-                        self.ui.show_message(
-
-                            f"{monster.name} hits you for 10 damage."
-
-                        )
-
-                        if self.player.health <= 0:
-                            self.ui.show_player_defeated()
-
+                        # Monster attacks after player's miss
+                        if not self.monster_attack(monster):
                             break
 
                         continue
 
                     # Monster died
-
                     if not monster.is_alive():
 
                         room.remove_monster(monster)
 
                         self.ui.show_monster_defeated(
-
                             monster
-
                         )
-
 
                     # Monster survived
-
                     else:
 
-                        monster.attack()
-
-                        self.player.take_damage(10)
-
-                        self.ui.show_message(
-
-                            f"{monster.name} hits you for 10 damage."
-
-                        )
-
-                        if self.player.health <= 0:
-                            self.ui.show_player_defeated()
-
+                        # Monster attacks back
+                        if not self.monster_attack(monster):
                             break
-
 
                 else:
 
                     self.ui.show_error(
-
                         "There are no monsters here."
-
                     )
 
             # -------------------------
