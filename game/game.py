@@ -118,8 +118,11 @@ class Game:
                         "That item isn't here."
                     )
 
+
             # -------------------------
+
             # ATTACK
+
             # -------------------------
 
             elif command == "attack":
@@ -130,26 +133,55 @@ class Game:
 
                     monster = room.monsters[0]
 
-                    damage = self.player.get_attack_damage()
+                    # Player attacks
 
-                    self.ui.show_attack(
-                        self.player,
-                        monster,
-                        damage
-                    )
+                    attack_successful = self.player.attack(monster)
 
-                    monster.take_damage(damage)
+                    # Player died
+
+                    if self.player.health <= 0:
+                        self.ui.show_player_defeated()
+
+                        break
+
+                    # Player missed
+
+                    if not attack_successful:
+
+                        # Monster gets a chance to attack
+
+                        monster.attack()
+
+                        self.player.take_damage(10)
+
+                        self.ui.show_message(
+
+                            f"{monster.name} hits you for 10 damage."
+
+                        )
+
+                        if self.player.health <= 0:
+                            self.ui.show_player_defeated()
+
+                            break
+
+                        continue
 
                     # Monster died
+
                     if not monster.is_alive():
 
                         room.remove_monster(monster)
 
                         self.ui.show_monster_defeated(
+
                             monster
+
                         )
 
+
                     # Monster survived
+
                     else:
 
                         monster.attack()
@@ -157,21 +189,24 @@ class Game:
                         self.player.take_damage(10)
 
                         self.ui.show_message(
+
                             f"{monster.name} hits you for 10 damage."
+
                         )
 
                         if self.player.health <= 0:
-
                             self.ui.show_player_defeated()
 
                             break
 
+
                 else:
 
                     self.ui.show_error(
-                        "There are no monsters here."
-                    )
 
+                        "There are no monsters here."
+
+                    )
             # -------------------------
             # INVENTORY
             # -------------------------

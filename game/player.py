@@ -1,3 +1,6 @@
+import random
+
+
 class Player:
 
     def __init__(self, name):
@@ -38,6 +41,30 @@ class Player:
 
     def attack(self, monster):
 
+        # 5% chance of dying while attacking
+        if random.random() < 0.05:
+
+            print(
+                f"{self.name} tries to attack {monster.name}..."
+            )
+
+            print(
+                f"{self.name} made a fatal mistake and died!"
+            )
+
+            self.health = 0
+            return False
+
+        # 20% chance to miss
+        if random.random() < 0.20:
+
+            print(
+                f"{self.name} attacks {monster.name} but misses!"
+            )
+
+            return False
+
+        # Successful attack
         damage = self.get_attack_damage()
 
         print(
@@ -47,11 +74,14 @@ class Player:
 
         monster.take_damage(damage)
 
+        return True
+
     def take_damage(self, damage):
 
         self.health -= damage
 
         if self.health < 0:
+
             self.health = 0
 
     def add_item(self, item):
