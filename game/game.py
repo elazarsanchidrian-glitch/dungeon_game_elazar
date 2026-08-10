@@ -66,19 +66,95 @@ class Game:
                 else:
                     self.ui.show_error("That item isn't here.")
 
+
+            # -------------------------
+
+            # ATTACK
+
+            # -------------------------
+
             elif command == "attack":
+
                 room = self.player.current_room
 
                 if room.monsters:
+
                     monster = room.monsters[0]
 
-                    self.ui.show_message(f"You attack {monster}!")
+                    # Player attacks
 
-                    room.remove_monster(monster)
+                    attack_successful = self.player.attack(monster)
 
-                    self.ui.show_message(f"{monster} was defeated!")
+                    # Player died
+
+                    if self.player.health <= 0:
+                        self.ui.show_player_defeated()
+
+                        break
+
+                    # Player missed
+
+                    if not attack_successful:
+
+                        # Monster gets a chance to attack
+
+                        monster.attack()
+
+                        self.player.take_damage(10)
+
+                        self.ui.show_message(
+
+                            f"{monster.name} hits you for 10 damage."
+
+                        )
+
+                        if self.player.health <= 0:
+                            self.ui.show_player_defeated()
+
+                            break
+
+                        continue
+
+                    # Monster died
+
+                    if not monster.is_alive():
+
+                        room.remove_monster(monster)
+
+                        self.ui.show_monster_defeated(
+
+                            monster
+
+                        )
+
+
+                    # Monster survived
+
+                    else:
+
+                        monster.attack()
+
+                        self.player.take_damage(10)
+
+                        self.ui.show_message(
+
+                            f"{monster.name} hits you for 10 damage."
+
+                        )
+
+                        if self.player.health <= 0:
+                            self.ui.show_player_defeated()
+
+                            break
+
+
                 else:
-                    self.ui.show_error("There are no monsters here.")
+
+                    self.ui.show_error(
+
+                        "There are no monsters here."
+
+                    )
 
             elif command == "inventory":
                 self.ui.show_inventory(self.player)
