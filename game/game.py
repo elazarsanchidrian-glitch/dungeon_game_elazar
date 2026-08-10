@@ -19,10 +19,13 @@ class Game:
         # Create character
         character = CharacterCreation(player_name)
 
-        # Choose race first
+        # Choose gender
+        character.choose_gender()
+
+        # Choose race
         character.choose_race()
 
-        # Then choose class
+        # Choose class
         character.choose_class()
 
         character.show_character()
@@ -30,6 +33,7 @@ class Game:
         # Create player
         self.player = Player(player_name)
 
+        self.player.gender = character.gender
         self.player.race = character.race
         self.player.character_class = character.character_class
         self.player.passive = character.passive

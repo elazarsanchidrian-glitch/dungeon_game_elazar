@@ -6,6 +6,7 @@ class Player:
     def __init__(self, name):
 
         self.name = name
+        self.gender = None
 
         self.health = 100
         self.max_health = 100
@@ -23,6 +24,7 @@ class Player:
 
         self.current_room = None
 
+    # Everything below these stays exactly as it was.
     def move(self, room):
         self.current_room = room
 

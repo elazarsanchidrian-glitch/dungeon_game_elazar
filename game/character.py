@@ -3,6 +3,7 @@ class CharacterCreation:
     def __init__(self, name):
         self.name = name
 
+        self.gender = None
         self.race = None
         self.character_class = None
         self.passive = None
@@ -10,6 +11,23 @@ class CharacterCreation:
         self.health = 100
         self.stamina = 100
         self.magicka = 100
+
+    def choose_gender(self):
+        print("\nChoose your gender:")
+        print("1. Male")
+        print("2. Female")
+
+        choice = input("Choice: ")
+
+        if choice == "1":
+            self.gender = "Male"
+
+        elif choice == "2":
+            self.gender = "Female"
+
+        else:
+            print("Invalid choice. Male selected.")
+            self.gender = "Male"
 
     def choose_race(self):
         print("\nChoose your race:")
@@ -106,6 +124,7 @@ class CharacterCreation:
     def show_character(self):
         print("\n===== CHARACTER CREATED =====")
         print(f"Name: {self.name}")
+        print(f"Gender: {self.gender}")
         print(f"Race: {self.race}")
         print(f"Class: {self.character_class}")
         print(f"Passive: {self.passive}")

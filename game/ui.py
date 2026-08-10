@@ -125,6 +125,7 @@ class ConsoleUI:
         print("\nPlayer Stats")
 
         print(f"Name: {player.name}")
+        print(f"Gender: {player.gender}")
         print(f"Race: {player.race}")
         print(f"Class: {player.character_class}")
         print(f"Passive: {player.passive}")
