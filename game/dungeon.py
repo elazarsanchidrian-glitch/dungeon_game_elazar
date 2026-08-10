@@ -12,35 +12,65 @@ class Dungeon:
 
         self.create_rooms()
 
-        # Starting room
         self.current_room = self.get_current_room()
-
-    ##################################################
-    # Create Rooms
-    ##################################################
 
     def create_rooms(self):
         self.rooms = [
             [
-                Room("Entrance", "The entrance to the dungeon. It's cold and quiet."),
-                Room("Hallway", "A long stone hallway with flickering torches."),
-                Room("Armory", "Old weapons are scattered across the floor.")
+                Room(
+                    "Entrance",
+                    "The entrance to the dungeon. It's cold and quiet."
+                ),
+
+                Room(
+                    "Hallway",
+                    "A long stone hallway with flickering torches."
+                ),
+
+                Room(
+                    "Armory",
+                    "Old weapons are scattered across the floor."
+                )
             ],
+
             [
-                Room("Cave", "A damp cave echoes with strange noises."),
-                Room("Crossroads", "Four paths meet here."),
-                Room("Library", "Dusty books fill ancient shelves.")
+                Room(
+                    "Cave",
+                    "A damp cave echoes with strange noises."
+                ),
+
+                Room(
+                    "Crossroads",
+                    "Four paths meet here."
+                ),
+
+                Room(
+                    "Library",
+                    "Dusty books fill ancient shelves."
+                )
             ],
+
             [
-                Room("Crypt", "Broken tombs line the walls."),
-                Room("Treasure Room", "Gold sparkles in the darkness."),
-                Room("Boss Room", "A powerful enemy waits here.")
+                Room(
+                    "Crypt",
+                    "Broken tombs line the walls."
+                ),
+
+                Room(
+                    "Treasure Room",
+                    "Gold sparkles in the darkness."
+                ),
+
+                Room(
+                    "Boss Room",
+                    "A powerful enemy waits here."
+                )
             ]
         ]
 
-        ##################################################
-        # Create Items
-        ##################################################
+        # -------------------------
+        # ITEMS
+        # -------------------------
 
         rusty_sword = Item(
             "Rusty Sword",
@@ -66,33 +96,31 @@ class Dungeon:
             100
         )
 
-        ##################################################
-        # Place Items
-        ##################################################
-
+        # Place items
         self.rooms[0][0].add_item(rusty_sword)
         self.rooms[0][2].add_item(leather_armor)
         self.rooms[1][2].add_item(potion)
         self.rooms[2][1].add_item(gold)
 
-        ##################################################
-        # Place Monsters
-        ##################################################
+        # -------------------------
+        # MONSTERS
+        # -------------------------
 
-        self.rooms[1][0].add_monster("Goblin")
-        self.rooms[2][0].add_monster("Skeleton")
-        self.rooms[2][2].add_monster("Dragon")
+        goblin = Monster("Goblin", 50, 10)
+        skeleton = Monster("Skeleton", 75, 15)
+        dragon = Monster("Dragon", 200, 25)
 
-    ##################################################
-    # Current Room
-    ##################################################
+        # Place monsters
+        self.rooms[1][0].add_monster(goblin)
+        self.rooms[2][0].add_monster(skeleton)
+        self.rooms[2][2].add_monster(dragon)
 
     def get_current_room(self):
         return self.rooms[self.current_row][self.current_col]
 
-    ##################################################
-    # Movement
-    ##################################################
+    # -------------------------
+    # MOVEMENT
+    # -------------------------
 
     def move_north(self):
         if self.current_row > 0:
@@ -125,10 +153,6 @@ class Dungeon:
             print("You can't go west.")
 
         self.current_room = self.get_current_room()
-
-    ##################################################
-    # Display
-    ##################################################
 
     def display_current_room(self):
         self.current_room.display()

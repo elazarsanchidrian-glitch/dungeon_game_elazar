@@ -1,141 +1,219 @@
 class ConsoleUI:
 
-    ##################################################
-    # Welcome Screen
-    ##################################################
+    # -------------------------
+    # WELCOME
+    # -------------------------
 
     def show_welcome(self):
+
         print("=" * 40)
+
         print(" Welcome to the Dungeon Game!")
+
         print("=" * 40)
 
     def get_player_name(self):
+
         return input("Enter your name: ")
 
-    ##################################################
-    # Main Menu
-    ##################################################
+    # -------------------------
+    # MAIN MENU
+    # -------------------------
 
     def show_menu(self):
+
         print("\nMain Menu")
+
         print("1. Start Game")
+
         print("2. Show Stats")
+
         print("3. Inventory")
+
         print("4. Quit")
 
     def get_menu_choice(self):
+
         return input("Choose an option: ")
 
-    ##################################################
-    # Room Display
-    ##################################################
+    # -------------------------
+    # ROOM
+    # -------------------------
 
     def show_room(self, room):
+
         room.display()
 
-    ##################################################
-    # Commands
-    ##################################################
+    # -------------------------
+    # COMMANDS
+    # -------------------------
 
     def show_commands(self):
+
         print("\nCommands:")
+
         print("north")
         print("south")
         print("east")
         print("west")
+
+        print("take <item>")
+
+        print("attack")
+
         print("inventory")
+
         print("stats")
+
         print("quit")
 
     def get_command(self):
-        return input("> ").lower()
 
-    ##################################################
-    # Player Movement
-    ##################################################
+        return input("> ").lower().strip()
+
+    # -------------------------
+    # DIRECTIONS
+    # -------------------------
 
     def get_direction(self, exits):
-        print(f"Available directions: {', '.join(exits)}")
-        return input("Which direction? ").lower()
 
-    ##################################################
-    # General Messages
-    ##################################################
+        print(
+            f"Available directions: "
+            f"{', '.join(exits)}"
+        )
+
+        return input(
+            "Which direction? "
+        ).lower().strip()
+
+    # -------------------------
+    # MESSAGES
+    # -------------------------
 
     def show_message(self, message):
+
         print(message)
 
     def show_error(self, message):
+
         print(f"\n[ERROR] {message}")
 
-    ##################################################
-    # Inventory
-    ##################################################
+    # -------------------------
+    # INVENTORY
+    # -------------------------
 
     def show_inventory(self, player):
+
         print("\nInventory:")
 
         if not player.inventory:
+
             print("Empty")
+
         else:
+
             for item in player.inventory:
+
                 print(f"- {item}")
 
-    ##################################################
-    # Player Statistics
-    ##################################################
+    # -------------------------
+    # PLAYER STATS
+    # -------------------------
 
     def show_player_stats(self, player):
+
         print("\nPlayer Stats")
+
         print(f"Name: {player.name}")
+
+        print(f"Class: {player.character_class}")
+
         print(f"Health: {player.health}")
+
         print(f"Stamina: {player.stamina}")
+
         print(f"Magicka: {player.magicka}")
+
         print(f"Gold: {player.gold}")
 
-    ##################################################
-    # Combat
-    ##################################################
+    # -------------------------
+    # COMBAT
+    # -------------------------
 
     def show_combat_start(self, monster):
-        print(f"\nA {monster.name} appears!")
 
-    def show_attack(self, attacker, defender, damage):
-        print(f"{attacker.name} attacks {defender.name} for {damage} damage!")
+        print(
+            f"\nA {monster.name} appears!"
+        )
+
+    def show_attack(
+        self,
+        attacker,
+        defender,
+        damage
+    ):
+
+        print(
+            f"{attacker.name} attacks "
+            f"{defender.name} "
+            f"for {damage} damage!"
+        )
 
     def show_monster_defeated(self, monster):
-        print(f"{monster.name} has been defeated!")
+
+        print(
+            f"{monster.name} has been defeated!"
+        )
 
     def show_player_defeated(self):
+
         print("Game Over!")
 
-    ##################################################
-    # Items
-    ##################################################
+    # -------------------------
+    # ITEMS
+    # -------------------------
 
     def show_items_found(self, items):
+
         if items:
+
             print("\nItems found:")
+
             for item in items:
+
                 print(f"- {item}")
+
         else:
+
             print("No items found.")
 
     def confirm_pickup(self, item):
-        choice = input(f"Pick up {item}? (y/n): ")
+
+        choice = input(
+            f"Pick up {item}? (y/n): "
+        )
+
         return choice.lower() == "y"
 
-    ##################################################
-    # Victory
-    ##################################################
+    # -------------------------
+    # VICTORY
+    # -------------------------
 
     def show_victory(self):
-        print("Congratulations! You escaped the dungeon!")
 
-    ##################################################
-    # Exit
-    ##################################################
+        print(
+            "Congratulations! "
+            "You escaped the dungeon!"
+        )
+
+    # -------------------------
+    # EXIT
+    # -------------------------
 
     def confirm_exit(self):
-        choice = input("Are you sure you want to quit? (y/n): ")
+
+        choice = input(
+            "Are you sure you want to quit? (y/n): "
+        )
+
         return choice.lower() == "y"
