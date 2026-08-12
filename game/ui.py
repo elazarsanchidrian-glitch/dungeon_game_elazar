@@ -62,9 +62,9 @@ class ConsoleUI:
         print("attack")
 
         print("inventory")
-
         print("stats")
-
+        print("save")
+        print("load")
         print("quit")
 
     def get_command(self):

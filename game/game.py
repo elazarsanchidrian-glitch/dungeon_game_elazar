@@ -2,7 +2,7 @@ from game.player import Player
 from game.dungeon import Dungeon
 from game.ui import ConsoleUI
 from game.character import CharacterCreation
-
+from game.save_system import SaveSystem
 
 class Game:
 
@@ -339,6 +339,10 @@ class Game:
             # -------------------------
             # QUIT
             # -------------------------
+
+            elif command == "save":
+
+                SaveSystem.save(self)
 
             elif command == "quit":
 
