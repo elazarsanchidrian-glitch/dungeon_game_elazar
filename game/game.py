@@ -13,24 +13,24 @@ class Game:
 
         self.ui.show_welcome()
 
-        # Get player name
+        # -------------------------
+        # CHARACTER CREATION
+        # -------------------------
+
         player_name = self.ui.get_player_name()
 
-        # Create character
         character = CharacterCreation(player_name)
 
-        # Choose gender
         character.choose_gender()
-
-        # Choose race
         character.choose_race()
-
-        # Choose class
         character.choose_class()
 
         character.show_character()
 
-        # Create player
+        # -------------------------
+        # CREATE PLAYER
+        # -------------------------
+
         self.player = Player(player_name)
 
         self.player.gender = character.gender
@@ -44,11 +44,17 @@ class Game:
         self.player.stamina = character.stamina
         self.player.magicka = character.magicka
 
-        # Start player in dungeon
+        # -------------------------
+        # STARTING ROOM
+        # -------------------------
+
         self.player.current_room = self.dungeon.current_room
 
+    # -------------------------
+    # MONSTER ATTACK
+    # -------------------------
+
     def monster_attack(self, monster):
-        """Monster attacks the player."""
 
         damage = monster.attack()
 
@@ -59,74 +65,237 @@ class Game:
         )
 
         self.ui.show_message(
-            f"Your health: {self.player.health}/{self.player.health}"
+            f"Your health: "
+            f"{self.player.health}/{self.player.max_health}"
         )
 
         if self.player.health <= 0:
+
             self.ui.show_player_defeated()
+
             return False
 
         return True
+
+    # -------------------------
+    # MOVEMENT
+    # -------------------------
 
     def move_player(self, direction):
 
         old_room = self.player.current_room
 
-        if direction == "north":
-            self.dungeon.move_north()
+        # Move through the infinite dungeon
+        moved = self.dungeon.move(direction)
 
-        elif direction == "south":
-            self.dungeon.move_south()
+        if not moved:
+            self.ui.show_error("Invalid direction.")
+            return
 
-        elif direction == "east":
-            self.dungeon.move_east()
-
-        elif direction == "west":
-            self.dungeon.move_west()
-
+        # Update player location
         self.player.current_room = self.dungeon.current_room
 
-        # Check if we actually entered a different room
+        # -------------------------
+        # NEW ROOM
+        # -------------------------
+
         if self.player.current_room is not old_room:
 
-            # Monsters appear when entering the room
-            if self.player.current_room.monsters:
+            x, y = self.dungeon.get_position()
 
-                for monster in self.player.current_room.monsters:
+            self.ui.show_message(
+                f"\nYou travel {direction}..."
+            )
+
+            self.ui.show_message(
+                f"You enter: {self.player.current_room.name}"
+            )
+
+            self.ui.show_message(
+                f"Dungeon coordinates: ({x}, {y})"
+            )
+
+            # -------------------------
+            # RANDOM ENCOUNTER
+            # -------------------------
+
+            room = self.player.current_room
+
+            if room.monsters:
+
+                for monster in room.monsters:
 
                     self.ui.show_combat_start(monster)
+
                     monster.speak()
 
-                    # Monster immediately attacks
                     if not self.monster_attack(monster):
+
                         return
+
+    # -------------------------
+    # LOOK / EXPLORE
+    # -------------------------
+
+    def explore(self):
+
+        room = self.player.current_room
+
+        x, y = self.dungeon.get_position()
+
+        print(
+            f"\nDungeon coordinates: ({x}, {y})"
+        )
+
+        room.explore()
+
+    # -------------------------
+    # TAKE ITEM
+    # -------------------------
+
+    def take_item(self, item_name):
+
+        room = self.player.current_room
+
+        found_item = None
+
+        for item in room.items:
+
+            if item.name.lower() == item_name.lower():
+
+                found_item = item
+
+                break
+
+        if found_item:
+
+            room.remove_item(found_item)
+
+            self.player.add_item(found_item)
+
+            self.ui.show_message(
+                f"You picked up {found_item.name}."
+            )
+
+        else:
+
+            self.ui.show_error(
+                "That item isn't here."
+            )
+
+    # -------------------------
+    # ATTACK
+    # -------------------------
+
+    def attack(self):
+
+        room = self.player.current_room
+
+        if not room.monsters:
+
+            self.ui.show_error(
+                "There are no monsters here."
+            )
+
+            return
+
+        monster = room.monsters[0]
+
+        # Player attacks
+        attack_successful = self.player.attack(monster)
+
+        # Player died
+        if self.player.health <= 0:
+
+            self.ui.show_player_defeated()
+
+            return False
+
+        # Player missed
+        if not attack_successful:
+
+            if not self.monster_attack(monster):
+
+                return False
+
+            return True
+
+        # Monster died
+        if not monster.is_alive():
+
+            room.remove_monster(monster)
+
+            self.ui.show_monster_defeated(
+                monster
+            )
+
+            return True
+
+        # Monster survived
+        if not self.monster_attack(monster):
+
+            return False
+
+        return True
+
+    # -------------------------
+    # START GAME
+    # -------------------------
 
     def start(self):
 
         self.ui.show_message(
-            f"Welcome to the dungeon, {self.player.name}!"
+            f"\nWelcome to the dungeon, "
+            f"{self.player.name}!"
+        )
+
+        self.ui.show_message(
+            "\nYou stand at the entrance of an "
+            "endless dungeon."
+        )
+
+        self.ui.show_message(
+            "Type 'look' to examine your surroundings."
         )
 
         while True:
 
-            # Display room
-            self.player.current_room.display()
+            # -------------------------
+            # COMMANDS
+            # -------------------------
 
-            # Commands
             self.ui.show_commands()
 
-            command = input("> ").lower().strip()
+            command = self.ui.get_command()
 
             # -------------------------
             # MOVEMENT
             # -------------------------
 
-            if command in ("north", "south", "east", "west"):
+            if command in (
+                "north",
+                "south",
+                "east",
+                "west"
+            ):
 
                 self.move_player(command)
 
                 if self.player.health <= 0:
                     break
+
+            # -------------------------
+            # LOOK
+            # -------------------------
+
+            elif command in (
+                "look",
+                "search",
+                "explore",
+                "observe"
+            ):
+
+                self.explore()
 
             # -------------------------
             # TAKE ITEM
@@ -136,31 +305,7 @@ class Game:
 
                 item_name = command[5:].strip()
 
-                room = self.player.current_room
-
-                found_item = None
-
-                for item in room.items:
-
-                    if item.name.lower() == item_name:
-                        found_item = item
-                        break
-
-                if found_item:
-
-                    room.remove_item(found_item)
-
-                    self.player.add_item(found_item)
-
-                    self.ui.show_message(
-                        f"You picked up {found_item.name}."
-                    )
-
-                else:
-
-                    self.ui.show_error(
-                        "That item isn't here."
-                    )
+                self.take_item(item_name)
 
             # -------------------------
             # ATTACK
@@ -168,51 +313,8 @@ class Game:
 
             elif command == "attack":
 
-                room = self.player.current_room
-
-                if room.monsters:
-
-                    monster = room.monsters[0]
-
-                    # Player attacks
-                    attack_successful = self.player.attack(monster)
-
-                    # Player died
-                    if self.player.health <= 0:
-
-                        self.ui.show_player_defeated()
-                        break
-
-                    # Player missed
-                    if not attack_successful:
-
-                        # Monster attacks after player's miss
-                        if not self.monster_attack(monster):
-                            break
-
-                        continue
-
-                    # Monster died
-                    if not monster.is_alive():
-
-                        room.remove_monster(monster)
-
-                        self.ui.show_monster_defeated(
-                            monster
-                        )
-
-                    # Monster survived
-                    else:
-
-                        # Monster attacks back
-                        if not self.monster_attack(monster):
-                            break
-
-                else:
-
-                    self.ui.show_error(
-                        "There are no monsters here."
-                    )
+                if not self.attack():
+                    break
 
             # -------------------------
             # INVENTORY
