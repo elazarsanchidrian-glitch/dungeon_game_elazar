@@ -324,6 +324,7 @@ class Dungeon:
         self.rooms[2][0].add_monster(skeleton)
         self.rooms[2][1].add_monster(vampire)
         self.rooms[2][2].add_monster(demon)
+
     # -------------------------
     # MOVEMENT
     # -------------------------
@@ -362,3 +363,6 @@ class Dungeon:
 
     def display_current_room(self):
         self.current_room.display()
+
+    def get_current_room(self):
+        return self.rooms[self.current_row][self.current_col]
