@@ -75,6 +75,107 @@ class Monster:
         else:
             print(random.choice(self.death_sounds))
 
+    def generate_loot(self):
+        """Generate random loot when this monster dies."""
+
+        import random
+        from game.item import Item
+
+        loot = []
+
+        loot_tables = {
+
+            "Goblin": [
+                ("Rusty Dagger", "A battered dagger.", 15),
+                ("Small Pouch of Gold", "A small pouch of stolen coins.", 20),
+                ("Old Ring", "A cheap old ring.", 10),
+                ("Health Potion", "Restores some health.", 25)
+            ],
+
+            "Skeleton": [
+                ("Rusty Sword", "An old sword recovered from the dead.", 20),
+                ("Ancient Coin", "An old coin found among the bones.", 30),
+                ("Bone Charm", "A strange charm made from bone.", 15),
+                ("Small Pouch of Gold", "Gold carried by the dead.", 20)
+            ],
+
+            "Bandit": [
+                ("Iron Dagger", "A well-used bandit's dagger.", 30),
+                ("Leather Armor", "Basic leather armor.", 40),
+                ("Pouch of Gold", "Gold stolen from travelers.", 50),
+                ("Health Potion", "Restores some health.", 25)
+            ],
+
+            "Troll": [
+                ("Troll Club", "A massive crude club.", 80),
+                ("Large Pouch of Gold", "A surprisingly large amount of gold.", 100),
+                ("Health Potion", "Restores some health.", 25)
+            ],
+
+            "Orc": [
+                ("Orc Axe", "A heavy orcish axe.", 100),
+                ("Heavy Armor", "Heavy armor taken from an orc warrior.", 120),
+                ("Pouch of Gold", "Gold taken from defeated enemies.", 60)
+            ],
+
+            "Demon": [
+                ("Demon Fang", "A terrifying fang from a demon.", 200),
+                ("Dark Crystal", "A strange crystal radiating dark energy.", 300),
+                ("Large Pouch of Gold", "Treasure accumulated by the demon.", 150)
+            ],
+
+            "Spirit": [
+                ("Ghostly Charm", "A strange object that feels unnaturally cold.", 150),
+                ("Ancient Coin", "A coin from a forgotten age.", 75)
+            ],
+
+            "Vampire": [
+                ("Vampire Fang", "A sharp fang from an ancient vampire.", 250),
+                ("Blood Ruby", "A dark red gemstone.", 400),
+                ("Silver Ring", "An ornate silver ring.", 150),
+                ("Pouch of Gold", "Gold accumulated over centuries.", 100)
+            ],
+
+            "Dragon": [
+                ("Dragon Scale", "A powerful scale from a dragon.", 500),
+                ("Dragon Fang", "A massive dragon fang.", 750),
+                ("Dragon Treasure", "A piece of treasure from a dragon's hoard.", 1000),
+                ("Ancient Gem", "A priceless ancient gemstone.", 800)
+            ]
+        }
+
+        # 25% chance of dropping nothing
+        if random.random() < 0.25:
+            return loot
+
+        possible_loot = loot_tables.get(self.name, [])
+
+        if not possible_loot:
+            return loot
+
+        # Usually one item, sometimes two
+        number_of_items = random.choices(
+            [1, 2],
+            weights=[80, 20]
+        )[0]
+
+        selected = random.sample(
+            possible_loot,
+            min(number_of_items, len(possible_loot))
+        )
+
+        for name, description, value in selected:
+
+            loot.append(
+                Item(
+                    name,
+                    description,
+                    value
+                )
+            )
+
+        return loot
+
     def is_alive(self):
         return self.health > 0
 

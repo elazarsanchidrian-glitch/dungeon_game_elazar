@@ -229,6 +229,35 @@ class Game:
                 monster
             )
 
+            # -------------------------
+            # ENEMY LOOT
+            # -------------------------
+
+            loot = monster.generate_loot()
+
+            if loot:
+
+                self.ui.show_message(
+                    f"\n{monster.name} dropped:"
+                )
+
+                for item in loot:
+                    room.add_item(item)
+
+                    self.ui.show_message(
+                        f" - {item.name}"
+                    )
+
+                self.ui.show_message(
+                    "\nThe loot is lying on the ground."
+                )
+
+            else:
+
+                self.ui.show_message(
+                    f"{monster.name} dropped nothing."
+                )
+
             return True
 
         # Monster survived
