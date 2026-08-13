@@ -135,6 +135,7 @@ class ConsoleUI:
         print(f"Magicka: {player.magicka}")
 
         print(f"Gold: {player.gold}")
+
     # -------------------------
     # COMBAT
     # -------------------------
@@ -145,11 +146,22 @@ class ConsoleUI:
             f"\nA {monster.name} appears!"
         )
 
+    def show_combat_options(self):
+
+        print("\nWhat do you do?")
+        print("1. Attack")
+        print("2. Dodge")
+        print("3. Escape")
+
+    def get_combat_choice(self):
+
+        return input("> ").lower().strip()
+
     def show_attack(
-        self,
-        attacker,
-        defender,
-        damage
+            self,
+            attacker,
+            defender,
+            damage
     ):
 
         print(
@@ -167,7 +179,6 @@ class ConsoleUI:
     def show_player_defeated(self):
 
         print("Game Over!")
-
     # -------------------------
     # ITEMS
     # -------------------------

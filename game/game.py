@@ -1,8 +1,11 @@
+import random
+
 from game.player import Player
 from game.dungeon import Dungeon
 from game.ui import ConsoleUI
 from game.character import CharacterCreation
 from game.save_system import SaveSystem
+
 
 class Game:
 
@@ -78,6 +81,51 @@ class Game:
         return True
 
     # -------------------------
+    # DODGE
+    # -------------------------
+
+    def dodge(self, monster):
+
+        # 50% chance to successfully dodge
+        if random.random() < 0.50:
+
+            self.ui.show_message(
+                f"You dodge {monster.name}'s attack!"
+            )
+
+            return True
+
+        self.ui.show_message(
+            f"You try to dodge, but {monster.name} catches you!"
+        )
+
+        return self.monster_attack(monster)
+
+    # -------------------------
+    # ESCAPE
+    # -------------------------
+
+    def escape(self, monster):
+
+        # 50% chance to escape
+        if random.random() < 0.50:
+
+            self.ui.show_message(
+                f"You successfully escape from {monster.name}!"
+            )
+
+            # The monster loses track of you
+            self.player.current_room.remove_monster(monster)
+
+            return True
+
+        self.ui.show_message(
+            f"You try to escape, but {monster.name} catches you!"
+        )
+
+        return self.monster_attack(monster)
+
+    # -------------------------
     # MOVEMENT
     # -------------------------
 
@@ -89,7 +137,9 @@ class Game:
         moved = self.dungeon.move(direction)
 
         if not moved:
+
             self.ui.show_error("Invalid direction.")
+
             return
 
         # Update player location
@@ -129,9 +179,52 @@ class Game:
 
                     monster.speak()
 
-                    if not self.monster_attack(monster):
+                    while monster.is_alive() and monster in room.monsters:
 
-                        return
+                        self.ui.show_combat_options()
+
+                        choice = self.ui.get_combat_choice()
+
+                        # -------------------------
+                        # ATTACK
+                        # -------------------------
+
+                        if choice in ("1", "attack"):
+
+                            if not self.attack():
+
+                                return
+
+                        # -------------------------
+                        # DODGE
+                        # -------------------------
+
+                        elif choice in ("2", "dodge"):
+
+                            if not self.dodge(monster):
+
+                                return
+
+                        # -------------------------
+                        # ESCAPE
+                        # -------------------------
+
+                        elif choice in ("3", "escape", "run"):
+
+                            if not self.escape(monster):
+
+                                return
+
+                            # Successful escape
+                            if monster not in room.monsters:
+
+                                break
+
+                        else:
+
+                            self.ui.show_error(
+                                "Choose Attack, Dodge, or Escape."
+                            )
 
     # -------------------------
     # LOOK / EXPLORE
@@ -197,7 +290,7 @@ class Game:
                 "There are no monsters here."
             )
 
-            return
+            return True
 
         monster = room.monsters[0]
 
@@ -242,6 +335,7 @@ class Game:
                 )
 
                 for item in loot:
+
                     room.add_item(item)
 
                     self.ui.show_message(
@@ -311,6 +405,7 @@ class Game:
                 self.move_player(command)
 
                 if self.player.health <= 0:
+
                     break
 
             # -------------------------
@@ -343,6 +438,7 @@ class Game:
             elif command == "attack":
 
                 if not self.attack():
+
                     break
 
             # -------------------------
@@ -376,6 +472,7 @@ class Game:
             elif command == "quit":
 
                 if self.ui.confirm_exit():
+
                     break
 
             # -------------------------
@@ -390,4 +487,5 @@ class Game:
 
 
 if __name__ == "__main__":
+
     Game().start()
