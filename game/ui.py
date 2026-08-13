@@ -104,17 +104,7 @@ class ConsoleUI:
 
     def show_inventory(self, player):
 
-        print("\nInventory:")
-
-        if not player.inventory:
-
-            print("Empty")
-
-        else:
-
-            for item in player.inventory:
-
-                print(f"- {item}")
+        player.show_inventory()
 
     # -------------------------
     # PLAYER STATS

@@ -48,6 +48,14 @@ class Game:
         self.player.magicka = character.magicka
 
         # -------------------------
+        # CLASS STARTING INVENTORY
+        # -------------------------
+
+        self.player.setup_starting_inventory()
+
+        self.player.health = character.health
+
+        # -------------------------
         # STARTING ROOM
         # -------------------------
 
