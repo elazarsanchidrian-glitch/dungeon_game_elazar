@@ -133,6 +133,63 @@ class Game:
 
         return self.monster_attack(monster)
 
+
+    # -------------------------
+    # DIALOGUE / SPEECH CHECK
+    # -------------------------
+
+    def dialogue(self, monster):
+
+        chance = monster.dialogue_success_chance
+
+        self.ui.show_message(
+            f"\nYou attempt to talk to {monster.name}..."
+        )
+
+        # Monster says something
+        monster.speak()
+
+        self.ui.show_message(
+            f"Speech check: {chance}% chance of success."
+        )
+
+        roll = random.randint(1, 100)
+
+        if roll <= chance:
+
+            self.ui.show_message(
+                f"You successfully convince {monster.name} "
+                f"to leave you alone!"
+            )
+
+            self.ui.show_message(
+                f"{monster.name}: Fine... leave me be."
+            )
+
+            # Remove the monster from the room
+            self.player.current_room.remove_monster(monster)
+
+            return True
+
+        # -------------------------
+        # FAILED SPEECH CHECK
+        # -------------------------
+
+        self.ui.show_message(
+            f"Your attempt to reason with {monster.name} fails!"
+        )
+
+        self.ui.show_message(
+            f"{monster.name}: Enough talk!"
+        )
+
+        self.ui.show_message(
+            f"{monster.name} attacks you!"
+        )
+
+        # Failed dialogue costs a turn
+        return self.monster_attack(monster)
+
     # -------------------------
     # MOVEMENT
     # -------------------------
@@ -228,11 +285,25 @@ class Game:
 
                                 break
 
+                        # -------------------------
+                        # DIALOGUE
+                        # -------------------------
+
+                        elif choice in ("4", "dialogue", "talk", "speak"):
+
+                            if self.dialogue(monster):
+
+                                # Successful dialogue removes the monster
+                                if monster not in room.monsters:
+
+                                    break
+
                         else:
 
                             self.ui.show_error(
-                                "Choose Attack, Dodge, or Escape."
+                                "Choose Attack, Dodge, Escape, or Dialogue."
                             )
+
 
     # -------------------------
     # LOOK / EXPLORE

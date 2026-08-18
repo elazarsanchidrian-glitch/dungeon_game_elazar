@@ -210,6 +210,7 @@ class Dungeon:
                     "Goblin: Stupid human!",
                     "Goblin: Get out of my cave!"
                 ],
+                dialogue_success_chance=65,
                 attack_sounds=[
                     "Goblin: YAAAA!",
                     "Goblin: STAB!",
@@ -230,6 +231,7 @@ class Dungeon:
                     "Skeleton: There is no escape from death.",
                     "Skeleton: We have waited for you..."
                 ],
+                dialogue_success_chance=40,
                 attack_sounds=[
                     "Skeleton: *rattling scream*",
                     "Skeleton: DIE, MORTAL!",
@@ -250,6 +252,7 @@ class Dungeon:
                     "Bandit: Your money or your life!",
                     "Bandit: I've killed better fighters than you."
                 ],
+                dialogue_success_chance=55,
                 attack_sounds=[
                     "Bandit: HYAA!",
                     "Bandit: Take this!",
@@ -270,6 +273,7 @@ class Dungeon:
                     "Troll: Leave cave!",
                     "Troll: Troll crush you!"
                 ],
+                dialogue_success_chance=30,
                 attack_sounds=[
                     "Troll: RAAAAAAARGH!",
                     "Troll: CRUSH!",
@@ -290,6 +294,7 @@ class Dungeon:
                     "Orc: I will grind your bones beneath my axe.",
                     "Orc: COME! FIGHT!"
                 ],
+                dialogue_success_chance=40,
                 attack_sounds=[
                     "Orc: WAAAAAGH!",
                     "Orc: FOR GLORY!",
@@ -310,6 +315,7 @@ class Dungeon:
                     "Demon: I have waited centuries for a soul like yours.",
                     "Demon: SCREAM, MORTAL!"
                 ],
+                dialogue_success_chance=20,
                 attack_sounds=[
                     "Demon: RAAAAAAAH!",
                     "Demon: BURN IN HELL!",
@@ -330,6 +336,7 @@ class Dungeon:
                     "Spirit: *whispers from the darkness*",
                     "Spirit: Join us..."
                 ],
+                dialogue_success_chance=35,
                 attack_sounds=[
                     "Spirit: *ghostly scream*",
                     "Spirit: AAAAAAAAH!",
@@ -350,6 +357,7 @@ class Dungeon:
                     "Vampire: How fortunate. Dinner has arrived.",
                     "Vampire: Your blood will sustain me."
                 ],
+                dialogue_success_chance=25,
                 attack_sounds=[
                     "Vampire: *hisses*",
                     "Vampire: DIE!",

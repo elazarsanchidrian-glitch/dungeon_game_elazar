@@ -142,6 +142,7 @@ class ConsoleUI:
         print("1. Attack")
         print("2. Dodge")
         print("3. Escape")
+        print("4. Dialogue")
 
     def get_combat_choice(self):
 

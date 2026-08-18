@@ -11,7 +11,8 @@ class Monster:
         dialogue=None,
         attack_sounds=None,
         reactions=None,
-        death_sounds=None
+        death_sounds=None,
+        dialogue_success_chance=50
     ):
         self.name = name
         self.health = health
@@ -19,6 +20,7 @@ class Monster:
         self.stamina = 100
         self.magicka = 100
         self.attack_damage = attack_damage
+        self.dialogue_success_chance = dialogue_success_chance
 
         self.dialogue = dialogue or [
             f"{self.name}: Grrrr...",
