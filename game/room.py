@@ -12,6 +12,10 @@ class Room:
 
         self.visited = False
 
+        # Special room states
+        self.is_exit = False
+        self.is_boss_room = False
+
         # Things the player might notice
         self.sights = []
         self.sounds = []
@@ -89,6 +93,15 @@ class Room:
 
         print(f"\n{self.description}")
 
+        if self.is_exit:
+            print("\n>>> EXIT FOUND! The way out is here. <<<")
+
+        elif self.is_boss_room:
+            if self.monsters:
+                print("\n!!! A forbidden presence lurks in this chamber. !!!")
+            else:
+                print("\nThe chamber is strangely empty... but something feels wrong.")
+
         # Generate atmosphere the first time
         if not self.visited:
             self.generate_atmosphere()
@@ -155,6 +168,12 @@ class Room:
 
         if self.description:
             print(self.description)
+
+        if self.is_exit:
+            print("\n>>> EXIT FOUND! <<<")
+
+        elif self.is_boss_room:
+            print("\n!!! FORBIDDEN BOSS CHAMBER !!!")
 
         if self.items:
             print("\nItems:")

@@ -13,6 +13,7 @@ class Game:
 
         self.ui = ConsoleUI()
         self.dungeon = Dungeon()
+        self.game_won = False
 
         self.ui.show_welcome()
 
@@ -191,6 +192,23 @@ class Game:
         return self.monster_attack(monster)
 
     # -------------------------
+    # VICTORY / EXIT
+    # -------------------------
+
+    def check_for_exit(self):
+        """Return True when the player reaches the normal dungeon exit."""
+        room = self.player.current_room
+
+        if room.is_exit:
+            self.ui.show_message(
+                "\nYou have discovered the dungeon exit!"
+            )
+            self.ui.show_victory()
+            return True
+
+        return False
+
+    # -------------------------
     # MOVEMENT
     # -------------------------
 
@@ -209,6 +227,11 @@ class Game:
 
         # Update player location
         self.player.current_room = self.dungeon.current_room
+
+        # Reaching the normal exit immediately wins the run.
+        if self.check_for_exit():
+            self.game_won = True
+            return
 
         # -------------------------
         # NEW ROOM
@@ -431,6 +454,26 @@ class Game:
                     f"{monster.name} dropped nothing."
                 )
 
+            # The dungeon boss has an exceptionally rare key drop.
+            if getattr(monster, "is_dungeon_boss", False):
+                if random.random() < self.dungeon.boss_key_drop_chance:
+                    from game.item import Item
+
+                    key = Item(
+                        "Ancient Dungeon Key",
+                        "A mysterious key dropped by the Dungeon Warden. "
+                        "Its purpose is unknown... for now.",
+                        500
+                    )
+                    room.add_item(key)
+                    self.ui.show_message(
+                        "\nRARE DROP! The Dungeon Warden dropped an Ancient Dungeon Key!"
+                    )
+                else:
+                    self.ui.show_message(
+                        "The Dungeon Warden did not drop the Ancient Dungeon Key."
+                    )
+
             return True
 
         # Monster survived
@@ -452,8 +495,16 @@ class Game:
         )
 
         self.ui.show_message(
-            "\nYou stand at the entrance of an "
-            "endless dungeon."
+            "\nYou stand at the entrance of a vast dungeon."
+        )
+
+        self.ui.show_message(
+            "Your goal is to explore the dungeon and find the exit."
+        )
+
+        self.ui.show_message(
+            "A legendary guardian and its key may exist somewhere in the darkness, "
+            "but finding them is extraordinarily unlikely."
         )
 
         self.ui.show_message(
@@ -483,7 +534,7 @@ class Game:
 
                 self.move_player(command)
 
-                if self.player.health <= 0:
+                if self.player.health <= 0 or self.game_won:
 
                     break
 
@@ -538,6 +589,23 @@ class Game:
 
                 self.ui.show_player_stats(
                     self.player
+                )
+
+            # -------------------------
+            # OBJECTIVE
+            # -------------------------
+
+            elif command == "objective":
+
+                self.ui.show_message(
+                    "Your objective: explore the dungeon and find the normal exit."
+                )
+                self.ui.show_message(
+                    "The exit is guaranteed to exist somewhere in the dungeon."
+                )
+                self.ui.show_message(
+                    "A legendary boss chamber may very rarely appear, and the boss "
+                    "has a very small chance to drop the Ancient Dungeon Key."
                 )
 
             # -------------------------

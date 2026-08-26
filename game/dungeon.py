@@ -20,8 +20,37 @@ class Dungeon:
         self.current_x = 0
         self.current_y = 0
 
+        # -------------------------
+        # DUNGEON OBJECTIVES
+        # -------------------------
+        # Every dungeon has a normal exit. Its location is randomized
+        # when the dungeon starts, but it is never placed in the entrance.
+        self.exit_min_distance = 5
+        self.exit_max_distance = 12
+        self.exit_x, self.exit_y = self._choose_exit_location()
+
+        # The boss encounter is intentionally extremely rare.
+        # These values are easy to tune later.
+        self.special_room_chance = 0.01      # 1% of newly discovered rooms
+        self.boss_spawn_chance = 0.10        # 10% if the rare room occurs
+        self.boss_key_drop_chance = 0.05     # 5% after defeating the boss
+
         # Create the starting room
         self.current_room = self.generate_room(0, 0, starting_room=True)
+
+    # -------------------------
+    # EXIT LOCATION
+    # -------------------------
+
+    def _choose_exit_location(self):
+        """Choose a guaranteed normal exit somewhere away from the entrance."""
+        while True:
+            x = random.randint(-self.exit_max_distance, self.exit_max_distance)
+            y = random.randint(-self.exit_max_distance, self.exit_max_distance)
+            distance = abs(x) + abs(y)
+
+            if self.exit_min_distance <= distance <= self.exit_max_distance:
+                return x, y
 
     # -------------------------
     # ROOM GENERATION
@@ -101,6 +130,16 @@ class Dungeon:
 
         room = Room(name, description)
 
+        # The normal exit is guaranteed to exist at the randomized
+        # coordinates chosen when this dungeon was created.
+        if not starting_room and (x, y) == (self.exit_x, self.exit_y):
+            room.name = "Dungeon Exit"
+            room.description = (
+                "A massive ancient doorway stands before you. "
+                "Cold air flows from beyond it. This must be the way out."
+            )
+            room.is_exit = True
+
         # Generate atmosphere
         room.generate_atmosphere()
 
@@ -108,18 +147,84 @@ class Dungeon:
         # RANDOM ITEMS
         # -------------------------
 
-        self.generate_items(room)
+        # Exit rooms and the starting room are kept free of random clutter.
+        if not starting_room and not room.is_exit:
+            self.generate_items(room)
+
+        # -------------------------
+        # EXTREMELY RARE BOSS ROOM
+        # -------------------------
+
+        if not starting_room and not room.is_exit:
+            self.generate_special_boss_room(room)
 
         # -------------------------
         # RANDOM ENEMIES
         # -------------------------
 
-        self.generate_monsters(room)
+        if not room.is_boss_room and not room.is_exit:
+            self.generate_monsters(room)
 
         # Save room
         self.rooms[(x, y)] = room
 
         return room
+
+    # -------------------------
+    # RARE BOSS ENCOUNTER
+    # -------------------------
+
+    def generate_special_boss_room(self, room):
+        """Occasionally turn a newly discovered room into a rare boss room."""
+        if random.random() >= self.special_room_chance:
+            return
+
+        room.name = "Forbidden Boss Chamber"
+        room.description = (
+            "The air is unnaturally still. Ancient symbols cover the walls, "
+            "and a huge sealed chamber dominates the room."
+        )
+        room.is_boss_room = True
+
+        # Even after finding the exceptionally rare chamber, the boss itself
+        # has another very small chance to actually be present.
+        if random.random() >= self.boss_spawn_chance:
+            return
+
+        boss = Monster(
+            "Dungeon Warden",
+            300,
+            35,
+            dialogue=[
+                "Dungeon Warden: You were never meant to find this chamber.",
+                "Dungeon Warden: Turn back, intruder.",
+                "Dungeon Warden: The dungeon itself has chosen your grave.",
+                "Dungeon Warden: Few ever reach me. Fewer survive.",
+                "Dungeon Warden: YOU WILL NOT LEAVE!"
+            ],
+            dialogue_success_chance=5,
+            attack_sounds=[
+                "Dungeon Warden: RAAAAAAAH!",
+                "Dungeon Warden: TRESPASSER!",
+                "Dungeon Warden: DIE!",
+                "Dungeon Warden: *the chamber shakes with a roar*",
+                "Dungeon Warden: YOU CANNOT ESCAPE!"
+            ],
+            reactions=[
+                "Dungeon Warden: Impressive... but futile.",
+                "Dungeon Warden: You dare wound me?",
+                "Dungeon Warden: *the Warden roars in fury*"
+            ],
+            death_sounds=[
+                "Dungeon Warden: No... the key...",
+                "Dungeon Warden: *the ancient guardian collapses*",
+                "Dungeon Warden: You... actually defeated me..."
+            ]
+        )
+
+        # Mark the boss so Game can give it the special key-drop rule.
+        boss.is_dungeon_boss = True
+        room.add_monster(boss)
 
     # -------------------------
     # ITEM GENERATION
