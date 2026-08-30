@@ -3,6 +3,7 @@ import random
 from game.room import Room
 from game.item import Item
 from game.monster import Monster
+from game.lost_traveler import LostTraveler
 
 
 class Dungeon:
@@ -492,6 +493,39 @@ class Dungeon:
         )[0]
 
         room.add_monster(monster)
+
+    # -------------------------
+    # RANDOM NPC
+    # -------------------------
+
+    if not room.is_boss_room and not room.is_exit:
+        self.generate_npc(room)
+
+    # -------------------------
+    # NPC GENERATION
+    # -------------------------
+
+    def generate_npc(self, room):
+        # 5% chance of a neutral NPC appearing
+        if random.random() > 0.05:
+            return
+
+        npc = LostTraveler()
+        room.add_npc(npc)
+
+    # -------------------------
+    # NPCS
+    # -------------------------
+
+    if self.npcs:
+        print("\nYou notice someone here:")
+
+        for npc in self.npcs:
+            print(f" - {npc.name}")
+            print(f"   {npc.description}")
+
+
+
 
     # -------------------------
     # MOVEMENT

@@ -1,5 +1,7 @@
 import random
 
+from game.lost_traveler import LostTraveler
+
 
 class Room:
 
@@ -9,6 +11,7 @@ class Room:
 
         self.items = []
         self.monsters = []
+        self.npcs = []
 
         self.visited = False
 
@@ -41,6 +44,47 @@ class Room:
     def remove_monster(self, monster):
         if monster in self.monsters:
             self.monsters.remove(monster)
+
+    # -------------------------
+    # NPCS
+    # -------------------------
+
+    def add_npc(self, npc):
+        self.npcs.append(npc)
+
+    def remove_npc(self, npc):
+        if npc in self.npcs:
+            self.npcs.remove(npc)
+
+    # -------------------------
+    # NPC'S
+    # -------------------------
+
+    if self.npcs:
+        print("\nYou notice someone here:")
+
+        for npc in self.npcs:
+            print(f" - {npc.name}")
+            print(f"   {npc.description}")
+
+    # -------------------------
+    # NPC GENERATION
+    # -------------------------
+
+    def generate_npc(self, room):
+        # 5% chance of a neutral NPC appearing
+        if random.random() > 0.05:
+            return
+
+        npc = LostTraveler()
+        room.add_npc(npc)
+
+    # -------------------------
+    # RANDOM NPC
+    # -------------------------
+
+    if not room.is_boss_room and not room.is_exit:
+        self.generate_npc(room)
 
     # -------------------------
     # EXPLORATION
@@ -192,3 +236,4 @@ class Room:
 
         if not self.items and not self.monsters:
             print("\nThe room is empty.")
+
