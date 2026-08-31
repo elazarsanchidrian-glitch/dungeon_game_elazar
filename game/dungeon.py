@@ -166,6 +166,18 @@ class Dungeon:
         if not room.is_boss_room and not room.is_exit:
             self.generate_monsters(room)
 
+        # -------------------------
+        # RANDOM NPC
+        # -------------------------
+
+        if not room.is_boss_room and not room.is_exit:
+            self.generate_npc(room)
+
+        # Save room
+        self.rooms[(x, y)] = room
+
+        return room
+
         # Save room
         self.rooms[(x, y)] = room
 
@@ -494,12 +506,6 @@ class Dungeon:
 
         room.add_monster(monster)
 
-    # -------------------------
-    # RANDOM NPC
-    # -------------------------
-
-    if not room.is_boss_room and not room.is_exit:
-        self.generate_npc(room)
 
     # -------------------------
     # NPC GENERATION
@@ -513,16 +519,7 @@ class Dungeon:
         npc = LostTraveler()
         room.add_npc(npc)
 
-    # -------------------------
-    # NPCS
-    # -------------------------
 
-    if self.npcs:
-        print("\nYou notice someone here:")
-
-        for npc in self.npcs:
-            print(f" - {npc.name}")
-            print(f"   {npc.description}")
 
 
 

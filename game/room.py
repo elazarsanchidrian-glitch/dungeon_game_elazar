@@ -1,6 +1,6 @@
 import random
 
-from game.lost_traveler import LostTraveler
+
 
 
 class Room:
@@ -22,6 +22,8 @@ class Room:
         # Things the player might notice
         self.sights = []
         self.sounds = []
+
+
 
     # -------------------------
     # ITEMS
@@ -57,34 +59,18 @@ class Room:
             self.npcs.remove(npc)
 
     # -------------------------
-    # NPC'S
-    # -------------------------
-
-    if self.npcs:
-        print("\nYou notice someone here:")
-
-        for npc in self.npcs:
-            print(f" - {npc.name}")
-            print(f"   {npc.description}")
-
-    # -------------------------
     # NPC GENERATION
     # -------------------------
 
     def generate_npc(self, room):
         # 5% chance of a neutral NPC appearing
-        if random.random() > 0.05:
+        if random.random() > 0.50:
             return
 
         npc = LostTraveler()
         room.add_npc(npc)
 
-    # -------------------------
-    # RANDOM NPC
-    # -------------------------
 
-    if not room.is_boss_room and not room.is_exit:
-        self.generate_npc(room)
 
     # -------------------------
     # EXPLORATION
@@ -200,6 +186,17 @@ class Room:
         else:
             print("\nYou don't see any enemies.")
 
+        # -------------------------
+        # NPCS
+        # -------------------------
+
+        if self.npcs:
+            print("\nYou notice someone here:")
+
+            for npc in self.npcs:
+                print(f" - {npc.name}")
+                print(f"   {npc.description}")
+
     # -------------------------
     # DISPLAY
     # -------------------------
@@ -234,6 +231,12 @@ class Room:
                     f"(HP: {monster.health}/{monster.max_health})"
                 )
 
-        if not self.items and not self.monsters:
+        if not self.items and not self.monsters and not self.npcs:
+            if self.npcs:
+                print("\nNPCs:")
+
+                for npc in self.npcs:
+                    print(f" - {npc.name}")
+                    print(f"   {npc.description}")
             print("\nThe room is empty.")
 
