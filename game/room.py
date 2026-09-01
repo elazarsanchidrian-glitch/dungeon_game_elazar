@@ -1,6 +1,6 @@
 import random
 
-
+from game.lost_traveler import LostTraveler
 
 
 class Room:
@@ -58,17 +58,6 @@ class Room:
         if npc in self.npcs:
             self.npcs.remove(npc)
 
-    # -------------------------
-    # NPC GENERATION
-    # -------------------------
-
-    def generate_npc(self, room):
-        # 5% chance of a neutral NPC appearing
-        if random.random() > 0.50:
-            return
-
-        npc = LostTraveler()
-        room.add_npc(npc)
 
 
 

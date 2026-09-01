@@ -345,6 +345,35 @@ class Game:
         room.explore()
 
     # -------------------------
+    # TALK TO NPC
+    # -------------------------
+
+    def talk_to_npc(self, npc_name=None):
+        room = self.player.current_room
+
+        if not room.npcs:
+            self.ui.show_error("There is nobody here to talk to.")
+            return
+
+        npc = None
+
+        # If no name was provided, talk to the first NPC
+        if npc_name is None:
+            npc = room.npcs[0]
+
+        else:
+            for character in room.npcs:
+                if character.name.lower() == npc_name.lower():
+                    npc = character
+                    break
+
+        if npc is None:
+            self.ui.show_error("That person isn't here.")
+            return
+
+        npc.talk()
+
+    # -------------------------
     # TAKE ITEM
     # -------------------------
 
@@ -377,6 +406,35 @@ class Game:
             self.ui.show_error(
                 "That item isn't here."
             )
+
+    # -------------------------
+    # TALK TO NPC
+    # -------------------------
+
+    def talk_to_npc(self, npc_name=None):
+        room = self.player.current_room
+
+        if not room.npcs:
+            self.ui.show_error("There is nobody here to talk to.")
+            return
+
+        npc = None
+
+        # If no name is provided, talk to the first NPC
+        if npc_name is None:
+            npc = room.npcs[0]
+
+        else:
+            for character in room.npcs:
+                if character.name.lower() == npc_name.lower():
+                    npc = character
+                    break
+
+        if npc is None:
+            self.ui.show_error("That person isn't here.")
+            return
+
+        npc.talk()
 
     # -------------------------
     # ATTACK
@@ -565,6 +623,8 @@ class Game:
             # ATTACK
             # -------------------------
 
+            elif command == "talk":
+                self.talk_to_npc()
             elif command == "attack":
 
                 if not self.attack():
