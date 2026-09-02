@@ -6,7 +6,7 @@
                                            |
                                         settings
                                            |
-                                         credits
+                                        credits
                                            |
                                        exit (quit)
                                            |
@@ -18,7 +18,7 @@
                                            |
                                          save 3
                                            |
-                                     pick name (generate)
+                                   pick name (generate)
                                            |
                           choose race - create class - (pick/generate)
                               |                             |
@@ -42,16 +42,17 @@
                                             |
                                       loading world
                                             |
-                           entering (randomly generated world)
+                            entering (randomly generated world)
                                             |
-                                (use classes and random)
+                                 (use classes and random)
 
                                             |
                         (move and fight through world and enemies)
                                             |
                                (level up and gain exp points)
                                             |
-
+                           main objective - find key and exit the dungeon
+                                            |
                                save progress(menu button/ui)
                                             |
-                                         exit game
+                                        exit game
