@@ -53,6 +53,7 @@ class Game:
         # -------------------------
 
         self.player.setup_starting_inventory()
+        self.player.auto_equip_starting_gear()
 
         self.player.health = character.health
 
@@ -321,10 +322,32 @@ class Game:
 
                                     break
 
+                        elif choice in ("5", "ability", "skill"):
+
+                            if not self.player.use_ability(monster):
+                                continue
+                            if not monster.is_alive():
+                                room.remove_monster(monster)
+                                self.ui.show_monster_defeated(monster)
+                                self.player.gain_xp(max(10, monster.max_health // 3))
+                                loot = monster.generate_loot()
+                                for item in loot:
+                                    room.add_item(item)
+                                    self.ui.show_message(f" - {item.name}")
+                            elif not self.monster_attack(monster):
+                                return
+
+                        elif choice in ("6", "use"):
+
+                            item_name = input("Use which item? ").strip()
+                            if self.player.use_item(item_name):
+                                if not self.monster_attack(monster):
+                                    return
+
                         else:
 
                             self.ui.show_error(
-                                "Choose Attack, Dodge, Escape, or Dialogue."
+                                "Choose Attack, Dodge, Escape, Dialogue, Ability, or Use."
                             )
 
 
@@ -343,35 +366,6 @@ class Game:
         )
 
         room.explore()
-
-    # -------------------------
-    # TALK TO NPC
-    # -------------------------
-
-    def talk_to_npc(self, npc_name=None):
-        room = self.player.current_room
-
-        if not room.npcs:
-            self.ui.show_error("There is nobody here to talk to.")
-            return
-
-        npc = None
-
-        # If no name was provided, talk to the first NPC
-        if npc_name is None:
-            npc = room.npcs[0]
-
-        else:
-            for character in room.npcs:
-                if character.name.lower() == npc_name.lower():
-                    npc = character
-                    break
-
-        if npc is None:
-            self.ui.show_error("That person isn't here.")
-            return
-
-        npc.talk()
 
     # -------------------------
     # TAKE ITEM
@@ -434,7 +428,10 @@ class Game:
             self.ui.show_error("That person isn't here.")
             return
 
-        npc.talk()
+        try:
+            npc.talk(self.player)
+        except TypeError:
+            npc.talk()
 
     # -------------------------
     # ATTACK
@@ -512,6 +509,8 @@ class Game:
                     f"{monster.name} dropped nothing."
                 )
 
+            self.player.gain_xp(max(10, monster.max_health // 3))
+
             # The dungeon boss has an exceptionally rare key drop.
             if getattr(monster, "is_dungeon_boss", False):
                 if random.random() < self.dungeon.boss_key_drop_chance:
@@ -540,6 +539,87 @@ class Game:
             return False
 
         return True
+
+    # -------------------------
+    # USE / EQUIP / INSPECT
+    # -------------------------
+
+    def use_item(self, item_name):
+        if self.player.use_item(item_name):
+            self.ui.show_message(f"Health: {self.player.health}/{self.player.max_health} | Magicka: {self.player.magicka}")
+
+    def equip_item(self, item_name):
+        self.player.equip_item(item_name)
+
+    def inspect_item(self, item_name):
+        item = next((i for i in self.player.inventory if i.name.lower() == item_name.lower()), None)
+        if item:
+            item.inspect()
+        else:
+            self.ui.show_error("That item is not in your inventory.")
+
+    def load_game(self):
+        data = SaveSystem.load()
+        if not data:
+            return
+
+        player_data = data.get("player", {})
+        dungeon_data = data.get("dungeon", {})
+
+        self.player.name = player_data.get("name", self.player.name)
+        self.player.gender = player_data.get("gender")
+        self.player.race = player_data.get("race")
+        self.player.character_class = player_data.get("character_class")
+        self.player.passive = player_data.get("passive")
+        self.player.health = player_data.get("health", self.player.health)
+        self.player.max_health = player_data.get("max_health", self.player.max_health)
+        self.player.stamina = player_data.get("stamina", self.player.stamina)
+        self.player.magicka = player_data.get("magicka", self.player.magicka)
+        self.player.gold = player_data.get("gold", self.player.gold)
+        self.player.level = player_data.get("level", 1)
+        self.player.xp = player_data.get("xp", 0)
+        self.player.xp_to_next_level = player_data.get("xp_to_next_level", 100)
+
+        from game.item import Item
+        self.player.inventory = []
+        for saved_item in player_data.get("inventory", []):
+            self.player.inventory.append(
+                Item(
+                    saved_item.get("name", "Unknown Item"),
+                    saved_item.get("description", ""),
+                    saved_item.get("value", 0),
+                    saved_item.get("item_type", "misc"),
+                    saved_item.get("power", 0),
+                    saved_item.get("defense", 0)
+                )
+            )
+
+        # Restore dungeon seed data before rebuilding the current room.
+        if "exit_x" in dungeon_data and "exit_y" in dungeon_data:
+            self.dungeon.exit_x = dungeon_data["exit_x"]
+            self.dungeon.exit_y = dungeon_data["exit_y"]
+        self.dungeon.rooms = {}
+        self.dungeon.current_x = dungeon_data.get("current_x", 0)
+        self.dungeon.current_y = dungeon_data.get("current_y", 0)
+        self.dungeon.current_room = self.dungeon.generate_room(
+            self.dungeon.current_x, self.dungeon.current_y,
+            starting_room=(self.dungeon.current_x == 0 and self.dungeon.current_y == 0)
+        )
+        self.player.current_room = self.dungeon.current_room
+
+        self.player.equipped_weapon = None
+        self.player.equipped_armor = None
+        self.player.equipped_shield = None
+        for item in self.player.inventory:
+            if item.name == player_data.get("equipped_weapon"):
+                self.player.equipped_weapon = item
+            elif item.name == player_data.get("equipped_armor"):
+                self.player.equipped_armor = item
+            elif item.name == player_data.get("equipped_shield"):
+                self.player.equipped_shield = item
+
+        self.game_won = False
+        self.ui.show_message(f"Game loaded. Welcome back, {self.player.name}!")
 
     # -------------------------
     # START GAME
@@ -619,12 +699,26 @@ class Game:
 
                 self.take_item(item_name)
 
+            elif command.startswith("use "):
+
+                self.use_item(command[4:].strip())
+
+            elif command.startswith("equip "):
+
+                self.equip_item(command[6:].strip())
+
+            elif command.startswith("inspect "):
+
+                self.inspect_item(command[8:].strip())
+
             # -------------------------
             # ATTACK
             # -------------------------
 
             elif command == "talk":
                 self.talk_to_npc()
+            elif command.startswith("talk "):
+                self.talk_to_npc(command[5:].strip())
             elif command == "attack":
 
                 if not self.attack():
@@ -675,6 +769,10 @@ class Game:
             elif command == "save":
 
                 SaveSystem.save(self)
+
+            elif command == "load":
+
+                self.load_game()
 
             elif command == "quit":
 

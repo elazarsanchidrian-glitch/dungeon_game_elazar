@@ -58,6 +58,9 @@ class ConsoleUI:
         print("west")
 
         print("take <item>")
+        print("use <item>")
+        print("equip <item>")
+        print("inspect <item>")
 
         print("attack")
 
@@ -125,6 +128,11 @@ class ConsoleUI:
         print(f"Magicka: {player.magicka}")
 
         print(f"Gold: {player.gold}")
+        print(f"Level: {player.level}")
+        print(f"XP: {player.xp}/{player.xp_to_next_level}")
+        print(f"Weapon: {player.equipped_weapon.name if player.equipped_weapon else 'None'}")
+        print(f"Armor: {player.equipped_armor.name if player.equipped_armor else 'None'}")
+        print(f"Shield: {player.equipped_shield.name if player.equipped_shield else 'None'}")
 
     # -------------------------
     # COMBAT
@@ -143,6 +151,8 @@ class ConsoleUI:
         print("2. Dodge")
         print("3. Escape")
         print("4. Dialogue")
+        print("5. Ability")
+        print("6. Use Item")
 
     def get_combat_choice(self):
 
