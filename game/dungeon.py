@@ -4,6 +4,7 @@ from game.room import Room
 from game.item import Item
 from game.monster import Monster
 from game.lost_traveler import LostTraveler
+from game.merchant import Merchant
 
 
 class Dungeon:
@@ -512,13 +513,19 @@ class Dungeon:
     # -------------------------
 
     def generate_npc(self, room):
-        # 5% chance of a neutral NPC appearing
-        if random.random() > 0.05:
+        # 10% chance of a neutral NPC appearing
+        if random.random() > 0.10:
             return
 
-        npc = LostTraveler()
-        room.add_npc(npc)
+        npc_types = [
+            LostTraveler,
+            Merchant
+        ]
 
+        npc_class = random.choice(npc_types)
+        npc = npc_class()
+
+        room.add_npc(npc)
 
 
 

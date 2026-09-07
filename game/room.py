@@ -205,11 +205,19 @@ class Room:
         elif self.is_boss_room:
             print("\n!!! FORBIDDEN BOSS CHAMBER !!!")
 
+        # -------------------------
+        # ITEMS
+        # -------------------------
+
         if self.items:
             print("\nItems:")
 
             for item in self.items:
                 print(f" - {item}")
+
+        # -------------------------
+        # MONSTERS
+        # -------------------------
 
         if self.monsters:
             print("\nMonsters:")
@@ -220,12 +228,21 @@ class Room:
                     f"(HP: {monster.health}/{monster.max_health})"
                 )
 
-        if not self.items and not self.monsters and not self.npcs:
-            if self.npcs:
-                print("\nNPCs:")
+        # -------------------------
+        # NPCS
+        # -------------------------
 
-                for npc in self.npcs:
-                    print(f" - {npc.name}")
-                    print(f"   {npc.description}")
+        if self.npcs:
+            print("\nNPCs:")
+
+            for npc in self.npcs:
+                print(f" - {npc.name}")
+                print(f"   {npc.description}")
+
+        # -------------------------
+        # EMPTY ROOM
+        # -------------------------
+
+        if not self.items and not self.monsters and not self.npcs:
             print("\nThe room is empty.")
 
