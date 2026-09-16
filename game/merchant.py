@@ -1,5 +1,5 @@
-from game.npc import NPC
-from game.item import Item
+from .npc import NPC
+from .item import Item
 
 
 class Merchant(NPC):

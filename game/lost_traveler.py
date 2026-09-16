@@ -1,4 +1,4 @@
-from game.npc import NPC
+from .npc import NPC
 
 
 class LostTraveler(NPC):
@@ -8,6 +8,6 @@ class LostTraveler(NPC):
             "A weary traveler covered in dust and scratches."
         )
 
-    def talk(self):
+    def talk(self, player=None):
         print("Lost Traveler: Thank the gods... another person.")
         print("Lost Traveler: I've been wandering these tunnels for hours.")

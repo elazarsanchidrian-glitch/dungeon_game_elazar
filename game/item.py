@@ -29,10 +29,8 @@ class Item:
             print(f"Value: {self.value} gold")
         if self.item_type == "weapon":
             print(f"Attack bonus: +{self.power}")
-        elif self.item_type == "armor":
-            print(f"Damage reduction: {self.defense}%")
-        elif self.item_type == "shield":
-            print(f"Damage reduction: {self.defense}%")
+        elif self.item_type in ("armor", "shield"):
+            print(f"Damage reduction: {self.defense}")
         elif self.item_type == "consumable" and self.power:
             print(f"Effect: +{self.power}")
 
