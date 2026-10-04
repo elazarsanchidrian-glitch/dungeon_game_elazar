@@ -213,10 +213,10 @@ class Player:
             return False
 
         if item.item_type == "consumable":
-            heal_amount = getattr(item, "power", 25)
-            self.health = min(self.max_health, self.health + heal_amount)
+            # Fully restore health to maximum
+            self.health = self.max_health
             self.inventory.remove(item)
-            print(f"You used {item.name} and recovered {heal_amount} HP!")
+            print(f"You used {item.name} and your health was fully restored to {self.max_health} HP!")
             return True
         else:
             print(f"{item.name} cannot be consumed. Try using 'equip'.")
